@@ -2,6 +2,7 @@ package pl.nqriver.restapi.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.nqriver.restapi.model.Comment;
 import pl.nqriver.restapi.model.Post;
@@ -21,8 +22,9 @@ public class PostService {
     private final PostRepository postRepository;
 
 
-    public List<Post> getAllPosts(int page) {
-        return postRepository.findAllPosts(PageRequest.of(page, PAGE_SIZE));
+    public List<Post> getAllPosts(int page, Sort.Direction sort) {
+        return postRepository.findAllPosts(PageRequest.of(page, PAGE_SIZE,
+                Sort.by(sort, "id")));
     }
 
     public Post getPostById(Long id) {
@@ -30,8 +32,9 @@ public class PostService {
                 .orElseThrow();
     }
 
-    public List<Post> getAllPostsWithComments(int page) {
-        List<Post> allPosts = postRepository.findAllPosts(PageRequest.of(page, PAGE_SIZE));
+    public List<Post> getAllPostsWithComments(int page, Sort.Direction sort) {
+        List<Post> allPosts = postRepository.findAllPosts(PageRequest.of(page, PAGE_SIZE,
+                        Sort.by(sort, "id")));
         List<Long> postIds = allPosts.stream()
                 .map(Post::getId)
                 .collect(Collectors.toList());
@@ -42,7 +45,7 @@ public class PostService {
 
     private List<Comment> extractComments(List<Comment> comments, Long postId) {
         return comments.stream()
-                .filter(comment -> comment.getPostId() == postId)
+                .filter(comment -> comment.getPostId().equals(postId))
                 .collect(Collectors.toList());
     }
 }
