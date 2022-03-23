@@ -9,6 +9,7 @@ import pl.nqriver.restapi.model.Post;
 import pl.nqriver.restapi.repository.CommentRepository;
 import pl.nqriver.restapi.repository.PostRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,5 +48,22 @@ public class PostService {
         return comments.stream()
                 .filter(comment -> comment.getPostId().equals(postId))
                 .collect(Collectors.toList());
+    }
+
+    public Post addPost(Post post) {
+        return postRepository.save(post);
+    }
+
+    @Transactional
+    public Post editPost(Post post) {
+        Post editedPost = postRepository.findById(post.getId()).orElseThrow();
+        editedPost.setTitle(post.getTitle());
+        editedPost.setContent(post.getContent());
+//        return postRepository.save(post); //not necessary since Hibernate detects Entity change and saves changed entity
+        return post;
+    }
+
+    public void deletePostById(Long id) {
+        postRepository.deleteById(id);
     }
 }

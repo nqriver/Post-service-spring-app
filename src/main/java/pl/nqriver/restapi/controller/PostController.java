@@ -2,10 +2,7 @@ package pl.nqriver.restapi.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.nqriver.restapi.controller.dto.PostDto;
 import pl.nqriver.restapi.model.Post;
 import pl.nqriver.restapi.service.PostService;
@@ -28,8 +25,8 @@ public class PostController {
     }
 
     @GetMapping("/posts/comments")
-    public List<Post> getPostsWithComments(@RequestParam(required = false) int page, Sort.Direction sort) {
-        int pagetNumber = page < 0 ? 0 : page;
+    public List<Post> getPostsWithComments(@RequestParam(required = false) Integer page, Sort.Direction sort) {
+        int pagetNumber = page == null || page < 0 ? 0 : page;
         return postService.getAllPostsWithComments(pagetNumber, sort);
     }
 
@@ -37,4 +34,21 @@ public class PostController {
     public Post getSinglePost(@PathVariable Long id) {
         return postService.getPostById(id);
     }
+
+
+    @PostMapping("/posts")
+    public Post addPost(@RequestBody Post post) {
+        return postService.addPost(post);
+    }
+
+    @PutMapping("/posts")
+    public Post editPost(@RequestBody Post post) {
+        return postService.editPost(post);
+    }
+
+    @DeleteMapping("/posts/{id}")
+    public void deletePost(Long id) {
+        postService.deletePostById(id);
+    }
+
 }
