@@ -21,9 +21,10 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/posts")
-    public List<PostDto> getPosts(@RequestParam(required = false) int page, Sort.Direction sort) {
-        int pagetNumber = page < 0 ? 0 : page;
-        return mapToPostDtos(postService.getAllPosts(pagetNumber, sort));
+    public List<PostDto> getPosts(@RequestParam(required = false) Integer page, Sort.Direction sort) {
+        int pagetNumber = page == null || page < 0 ? 0 : page;
+        Sort.Direction sortDir = sort != null ? sort : Sort.Direction.ASC;
+        return mapToPostDtos(postService.getAllPosts(pagetNumber, sortDir));
     }
 
     @GetMapping("/posts/comments")
