@@ -1,3 +1,5 @@
+--liquibase formatted sql
+--changeset nqriver:1
 insert into post(id, title, content, created) values (1, 'Test post 1', 'Content 1', '2021-12-13T14:26:56.486718600');
 insert into post(id, title, content, created) values (2, 'Test post 2', 'Content 2', '2021-12-14T14:26:56.486718600');
 insert into post(id, title, content, created) values (3, 'Test post 3', 'Content 3', '2021-12-15T14:26:56.486718600');
@@ -189,11 +191,11 @@ insert into comment(id, post_id, content, created) values (88, 9, 'Comment 88', 
 insert into comment(id, post_id, content, created) values (89, 9, 'Comment 89', '2022-03-11T14:26:56.596095300');
 insert into comment(id, post_id, content, created) values (90, 10, 'Comment 90', '2022-03-12T14:26:56.596095300');
 insert into comment(id, post_id, content, created) values (91, 10, 'Comment 91', '2022-03-13T14:26:56.596095300');
+insert into comment(id, post_id, content, created) values (96, 10, 'Comment 96', '2022-03-18T14:26:56.611724700');
 insert into comment(id, post_id, content, created) values (92, 10, 'Comment 92', '2022-03-14T14:26:56.596095300');
 insert into comment(id, post_id, content, created) values (93, 10, 'Comment 93', '2022-03-15T14:26:56.596095300');
 insert into comment(id, post_id, content, created) values (94, 10, 'Comment 94', '2022-03-16T14:26:56.596095300');
 insert into comment(id, post_id, content, created) values (95, 10, 'Comment 95', '2022-03-17T14:26:56.611724700');
-insert into comment(id, post_id, content, created) values (96, 10, 'Comment 96', '2022-03-18T14:26:56.611724700');
 insert into comment(id, post_id, content, created) values (97, 10, 'Comment 97', '2022-03-19T14:26:56.611724700');
 insert into comment(id, post_id, content, created) values (98, 10, 'Comment 98', '2022-03-20T14:26:56.611724700');
 insert into comment(id, post_id, content, created) values (99, 10, 'Comment 99', '2022-03-21T14:26:56.611724700');
