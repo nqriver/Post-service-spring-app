@@ -1,6 +1,8 @@
 package pl.nqriver.restapi.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -8,7 +10,7 @@ import pl.nqriver.restapi.model.Comment;
 import pl.nqriver.restapi.model.Post;
 import pl.nqriver.restapi.repository.CommentRepository;
 import pl.nqriver.restapi.repository.PostRepository;
-
+import org.springframework.cache.annotation.Cacheable;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,11 +30,13 @@ public class PostService {
                 Sort.by(sort, "id")));
     }
 
+    @Cacheable(cacheNames = "SinglePost")
     public Post getPostById(Long id) {
         return postRepository.findById(id)
                 .orElseThrow();
     }
 
+    @Cacheable(cacheNames = "PostWithComments")
     public List<Post> getAllPostsWithComments(int page, Sort.Direction sort) {
         List<Post> allPosts = postRepository.findAllPosts(PageRequest.of(page, PAGE_SIZE,
                         Sort.by(sort, "id")));
@@ -55,6 +59,7 @@ public class PostService {
     }
 
     @Transactional
+    @CachePut(cacheNames = "SinglePost", key = "#result.id")
     public Post editPost(Post post) {
         Post editedPost = postRepository.findById(post.getId()).orElseThrow();
         editedPost.setTitle(post.getTitle());
@@ -63,7 +68,13 @@ public class PostService {
         return post;
     }
 
+    @CacheEvict(cacheNames = "SinglePost")
     public void deletePostById(Long id) {
         postRepository.deleteById(id);
     }
+
+    public void clearPostsWithComments() {
+
+    }
+
 }
