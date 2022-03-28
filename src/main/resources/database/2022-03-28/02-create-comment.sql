@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset nqriver:1
+--changeset nqriver:2
 
 CREATE TABLE COMMENT
 (

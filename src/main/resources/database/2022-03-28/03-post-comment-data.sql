@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset nqriver:1
+--changeset nqriver:3
 insert into post(id, title, content, created) values (1, 'Test post 1', 'Content 1', '2021-12-13T14:26:56.486718600');
 insert into post(id, title, content, created) values (2, 'Test post 2', 'Content 2', '2021-12-14T14:26:56.486718600');
 insert into post(id, title, content, created) values (3, 'Test post 3', 'Content 3', '2021-12-15T14:26:56.486718600');
