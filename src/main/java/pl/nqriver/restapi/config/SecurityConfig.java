@@ -20,16 +20,16 @@ import javax.sql.DataSource;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final DataSource datasource;
+    private final DataSource dataSource;
     private final ObjectMapper objectMapper;
     private final RestAuthenticationSuccessHandler successHandler;
     private final RestAuthenticationFailureHandler failureHandler;
     private final String secret;
 
-    public SecurityConfig(DataSource datasource, ObjectMapper objectMapper, RestAuthenticationSuccessHandler successHandler,
+    public SecurityConfig(DataSource dataSource, ObjectMapper objectMapper, RestAuthenticationSuccessHandler successHandler,
                           RestAuthenticationFailureHandler failureHandler,
-                          @Value("${jwt.secret") String secret) {
-        this.datasource = datasource;
+                          @Value("${jwt.secret}") String secret) {
+        this.dataSource = dataSource;
         this.objectMapper = objectMapper;
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication()
                 .withDefaultSchema()
-                .dataSource(datasource)
+                .dataSource(dataSource)
                 .withUser("test")
                 .password("{bcrypt}" + new BCryptPasswordEncoder().encode("test"))
                 .roles("USER");
@@ -49,7 +49,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
-
         http
                 .authorizeRequests()
                 .antMatchers("/swagger-ui.html").permitAll()
@@ -61,24 +60,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(jsonObjectAuthenticationFilter())
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userDetailsService(), secret))
+                .addFilter(authenticationFilter())
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userDetailsManager(), secret))
                 .exceptionHandling()
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 .and()
                 .headers().frameOptions().disable();
     }
 
-    public JsonObjectAuthenticationFilter jsonObjectAuthenticationFilter() throws Exception {
-        JsonObjectAuthenticationFilter jsonObjectAuthenticationFilter = new JsonObjectAuthenticationFilter(objectMapper);
-        jsonObjectAuthenticationFilter.setAuthenticationSuccessHandler(successHandler);
-        jsonObjectAuthenticationFilter.setAuthenticationFailureHandler(failureHandler);
-        jsonObjectAuthenticationFilter.setAuthenticationManager(super.authenticationManager());
-        return jsonObjectAuthenticationFilter;
+    public JsonObjectAuthenticationFilter authenticationFilter() throws Exception {
+        JsonObjectAuthenticationFilter authenticationFilter = new JsonObjectAuthenticationFilter(objectMapper);
+        authenticationFilter.setAuthenticationSuccessHandler(successHandler);
+        authenticationFilter.setAuthenticationFailureHandler(failureHandler);
+        authenticationFilter.setAuthenticationManager(super.authenticationManager());
+        return authenticationFilter;
     }
 
     @Bean
     public UserDetailsManager userDetailsManager() {
-        return new JdbcUserDetailsManager(datasource);
+        return new JdbcUserDetailsManager(dataSource);
     }
 }

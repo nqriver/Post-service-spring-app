@@ -21,7 +21,7 @@ public class PostController {
 
     @GetMapping("/posts")
     public List<PostDto> getPosts(@RequestParam(required = false) Integer page, Sort.Direction sort,
-                                  @AuthenticationPrincipal String user) {
+                                  UsernamePasswordAuthenticationToken user) {
         int pagetNumber = page == null || page < 0 ? 0 : page;
         Sort.Direction sortDir = sort != null ? sort : Sort.Direction.ASC;
         return mapToPostDtos(postService.getAllPosts(pagetNumber, sortDir));
